@@ -1,3 +1,31 @@
-<p>auth works!</p>
-<p-button label="Login" (click)="onLoginClick()" />
-
+<div class="container">
+    <p-card [style]="{ width: '25rem', overflow: 'hidden' }">
+        <ng-template #header>
+            <div class="header">
+                <h2>Logowanie</h2>
+            </div>
+        </ng-template>
+        <div class="form-container">
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full sm:w-56">
+                <div class="flex flex-col gap-1">
+                    <input pInputText class="email-input" type="email" id="email" placeholder="Email" formControlName="email" [invalid]="isInvalid('email')" fluid />
+                    @if (isInvalid('email')) {
+                        @if (loginForm.get('email')?.errors?.['required']) {
+                            <p-message severity="error" size="small" variant="simple">Email jest wymagany</p-message>
+                        }
+                        @if (loginForm.get('email')?.errors?.['email']) {
+                            <p-message severity="error" size="small" variant="simple">Podaj poprawny email</p-message>
+                        }
+                    }
+                </div>
+                <div class="flex flex-col gap-1">
+                    <p-password class="password-input" formControlName="password" [invalid]="isInvalid('password')" [feedback]="false" autocomplete="off" fluid />
+                    @if (isInvalid('value')) {
+                        <p-message severity="error" size="small" variant="simple">Hasło jest wymagane</p-message>
+                    }
+                </div>
+                <button pButton type="submit"><span pButtonLabel>Zaloguj się</span></button>
+            </form>
+        </div>
+    </p-card>
+</div>
