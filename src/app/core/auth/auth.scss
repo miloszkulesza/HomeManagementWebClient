@@ -1,10 +1,12 @@
-.container {
+.container, .header, .footer {
     display: flex;
     justify-content: center;
+    margin: 5px;
 }
 
 .email-input, .password-input {
     display: flex;
     margin: 5px;
     justify-content: center;
+    width: 100%;
 }

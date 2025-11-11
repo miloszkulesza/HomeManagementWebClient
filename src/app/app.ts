@@ -1,10 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { provideRouter, RouterOutlet } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet,
+    ToastModule
+  ],
   providers: [
     MessageService
   ],
