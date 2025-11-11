@@ -32,7 +32,6 @@ export class AuthService {
 
   login(data: LoginInterface): Observable<LoginResponseInterface> {
     return this.http.post<any>(`${this.url}login`, data).pipe(tap(res => {
-        console.log(res);
         this.userLogin$.next(data.email);
         this.isLogged$.next(true);
     }));

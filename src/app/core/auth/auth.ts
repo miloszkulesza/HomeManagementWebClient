@@ -64,7 +64,6 @@ export class Auth implements OnInit {
       this.formSubmitted = false;
       this.router.navigate(['/home']);
     }, err => {
-      console.log(err);
       let errorResponse: HttpErrorResponse = err;
       switch (errorResponse.status)
       {
