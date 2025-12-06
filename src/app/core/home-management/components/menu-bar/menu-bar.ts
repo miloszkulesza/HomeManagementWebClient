@@ -2,7 +2,7 @@ import { Component, inject, input, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { MenubarModule } from 'primeng/menubar';
 import { AuthService } from '../../../auth/auth-service';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,8 @@ import { RippleModule } from 'primeng/ripple';
     ButtonModule,
     BadgeModule,
     CommonModule,
-    RippleModule
+    RippleModule,
+    RouterModule
   ],
   templateUrl: './menu-bar.html',
   styleUrl: './menu-bar.scss'
@@ -30,8 +31,20 @@ export class MenuBar implements OnInit {
   ngOnInit() {
     this.items = [
       {
+        label: 'Zarządzanie domem',
+        icon: 'pi-home',
+        items: [
+          {
+            label: 'Kalendarz',
+            routerLink: 'calendar'
+          }
+        ]
+      },
+      {
         label: this.email(),
-        icon: 'pi-user'
+        icon: 'pi-user',
+        tooltip: 'Profil',
+        routerLink: 'profile'
       }
     ]
   }

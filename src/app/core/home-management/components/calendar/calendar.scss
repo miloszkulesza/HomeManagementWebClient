@@ -1,0 +1,69 @@
+.calendar-card {
+  max-width: 1300px;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.header-row {
+  /* Wyśrodkowanie przycisków i tytułu w jednej linii */
+  flex-wrap: nowrap;
+  justify-content: center; /* wyśrodkowanie */
+  align-items: center;
+}
+
+.header-row .title {
+  margin: 0 1rem;
+  font-weight: bold;
+  white-space: nowrap; /* nie przechodzi do nowej linii */
+}
+
+.months-wrapper {
+  width: 100%;
+}
+
+.month-wrapper {
+  flex: 1;
+  min-width: 300px; /* responsywne minimum */
+}
+
+.weekday-header .p-col {
+  font-weight: bold;
+  text-align: center; /* upewnienie się, że kolumny są wyśrodkowane */
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.day-cell {
+  min-height: 120px;
+  border: 1px solid #ddd;
+  padding: 4px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.other-month {
+  background: #f2f2f2;
+  color: #aaa;
+}
+
+.day-number {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.event {
+  color: white;
+  padding: 2px 4px;
+  border-radius: 3px
+}

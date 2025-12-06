@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { LoginInterface } from '../interface/login-interface';
 import { LoginResponseInterface } from '../interface/login-response-interface';
 
@@ -15,6 +15,14 @@ export class AuthService {
   private userLogin$ = new BehaviorSubject<string>('');
   private http = inject(HttpClient);
 
+  constructor() {
+      this.userLogin$.next(sessionStorage.getItem('login'));
+      if (this.userLogin$.getValue())
+      {
+        this.isLogged$.next(true);
+      }
+  }
+
   get UserInfo(): string {
       return this.userLogin$.getValue();
   }
@@ -24,8 +32,8 @@ export class AuthService {
   }
 
   logout(): void {
-      localStorage.removeItem('token');
-      localStorage.removeItem('login');
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('login');
       this.userLogin$.next('');
       this.isLogged$.next(false);
   }

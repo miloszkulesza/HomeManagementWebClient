@@ -57,12 +57,12 @@ export class Auth implements OnInit {
       password: this.loginForm.value.password
     };
     this.authService.login(data).subscribe(res => {
-      localStorage.setItem('token', res.accessToken);
-      localStorage.setItem('login', data.email);
+      sessionStorage.setItem('token', res.accessToken);
+      sessionStorage.setItem('login', data.email);
       this.messageService.add({ severity: 'success', summary: 'Zalogowano', detail: 'Zalogowano pomyślnie', life: 3000 });
       this.loginForm.reset();
       this.formSubmitted = false;
-      this.router.navigate(['/home']);
+      this.router.navigate(['/calendar']);
     }, err => {
       let errorResponse: HttpErrorResponse = err;
       switch (errorResponse.status)
