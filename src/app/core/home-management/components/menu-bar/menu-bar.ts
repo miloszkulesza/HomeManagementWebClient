@@ -2,11 +2,12 @@ import { Component, inject, input, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { MenubarModule } from 'primeng/menubar';
 import { AuthService } from '../../../auth/auth-service';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
 import { CommonModule } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-menu-bar',
@@ -15,7 +16,8 @@ import { RippleModule } from 'primeng/ripple';
     BadgeModule,
     CommonModule,
     RippleModule,
-    RouterModule
+    RouterModule,
+    TooltipModule 
   ],
   templateUrl: './menu-bar.html',
   styleUrl: './menu-bar.scss'
@@ -33,6 +35,10 @@ export class MenuBar implements OnInit {
       {
         label: 'Zarządzanie domem',
         icon: 'pi-home',
+        tooltip: 'Kliknij aby rozwinąć',
+        tooltipOptions: {
+          tooltipPosition: 'right'
+        },
         items: [
           {
             label: 'Kalendarz',
@@ -44,6 +50,9 @@ export class MenuBar implements OnInit {
         label: this.email(),
         icon: 'pi-user',
         tooltip: 'Profil',
+        tooltipOptions: {
+          tooltipPosition: 'bottom'
+        },
         routerLink: 'profile'
       }
     ]

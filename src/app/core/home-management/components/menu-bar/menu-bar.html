@@ -1,6 +1,6 @@
 <p-menubar [model]="items">
     <ng-template #item let-item let-root="root">
-        <a pRipple class="flex items-center p-menubar-item-link" [routerLink]="item.routerLink">
+        <a pRipple class="flex items-center p-menubar-item-link" [routerLink]="item.routerLink" [pTooltip]="item.tooltip" [tooltipOptions]="item.tooltipOptions">
             @if (item.icon) {
                 <i [ngClass]="['ml-auto pi', item.icon]"></i>
             }
