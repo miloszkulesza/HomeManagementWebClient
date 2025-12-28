@@ -7,3 +7,21 @@
 .calendar-card {
     width: 1000px;
 }
+
+.event-popover {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.date {
+  font-size: .85rem;
+  color: var(--text-color-secondary);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+}

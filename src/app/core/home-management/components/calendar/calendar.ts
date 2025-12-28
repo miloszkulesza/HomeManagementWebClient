@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, DateSelectArg, EventClickArg, EventInput } from '@fullcalendar/core';
 import { CardModule } from 'primeng/card';
@@ -8,40 +8,58 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import multiMonthPlugin from '@fullcalendar/multimonth';
-import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
-import resourceDayGridPlugin from '@fullcalendar/resource-daygrid';
+import { Popover } from 'primeng/popover';
+import { ButtonModule } from 'primeng/button';
+import { CalendarService } from './calendar-service';
+import { ApplicationUserInterface } from '../../../interface/application-users-interface';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-calendar',
   imports: [CommonModule,
     FullCalendarModule,
-    CardModule
+    CardModule,
+    Popover,
+    ButtonModule
   ],
   templateUrl: './calendar.html',
   styleUrl: './calendar.scss'
 })
-export class Calendar {
-  events: EventInput[] = [
-    {
-      id: '1',
-      title: 'Spotkanie zespołu',
-      start: new Date(),
-      editable: true,
-      extendedProps: {
-        priority: 'high',
-      },
-      backgroundColor: '#ff0000',
-      borderColor: '#ff0000'
-    },
-  ];
+export class Calendar implements OnInit {
+  @ViewChild('eventPopover') eventPopover!: Popover;
+  calendarService = inject(CalendarService);
+
+  selectedEvent: any;
+  events: EventInput[] = null;
+  currentUser: ApplicationUserInterface = null;
+
+  ngOnInit() {
+    forkJoin({
+      user: this.calendarService.getCurrentUserInfo(),
+      events: this.calendarService.getCalendarEvents()
+    }).subscribe(({ user, events }) => {
+      this.currentUser = user;
+      this.events = events.map(e => ({
+        id: e.id,
+        title: e.title,
+        start: e.startDate,
+        end: e.endDate,
+        editable: true,
+        extendedProps: { priority: 'high' },
+        backgroundColor: this.currentUser.calendarEventBackgroundColor,
+        borderColor: this.currentUser.calendarEventBackgroundColor,
+        userEmail: e.userEmail
+      }));
+      this.calendarOptions = { ...this.calendarOptions, events: this.events };
+    });
+  }
 
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,multiMonthYear',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
     },
     editable: true,
     selectable: true,
@@ -49,10 +67,7 @@ export class Calendar {
     plugins: [dayGridPlugin,
       timeGridPlugin,
       listPlugin,
-      interactionPlugin,
-      multiMonthPlugin,
-      resourceTimeGridPlugin,
-      resourceDayGridPlugin],
+      interactionPlugin],
     locale: plLocale,
     initialDate: new Date(),
     views: {
@@ -85,7 +100,7 @@ export class Calendar {
     eventClick: this.handleEventClick.bind(this),
     eventDrop: this.handleEventDrop.bind(this),
     eventResize: this.handleEventResize.bind(this),
-    datesSet: info => console.log('Zakres:', info),
+    datesSet: this.handleDatesSet.bind(this),
     events: this.events,
     eventColor: '#1976d2',
     eventTextColor: '#fff',
@@ -96,7 +111,7 @@ export class Calendar {
     fixedWeekCount: false,
     lazyFetching: true,
     progressiveEventRendering: true,
-    rerenderDelay: 10,
+    rerenderDelay: 10
   };
 
   handleDateSelect(selectInfo: DateSelectArg) {
@@ -115,9 +130,21 @@ export class Calendar {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
-    if (confirm(`Usunąć "${clickInfo.event.title}"?`)) {
-      clickInfo.event.remove();
+    clickInfo.jsEvent.preventDefault();
+    if (this.eventPopover) {
+      this.eventPopover.hide();
     }
+    this.selectedEvent = {
+      title: clickInfo.event.title,
+      start: clickInfo.event.start,
+      end: clickInfo.event.end,
+      userEmail: clickInfo.event.extendedProps['userEmail']
+    };
+    this.eventPopover.show(clickInfo.jsEvent, clickInfo.el);
+  }
+
+  handleDatesSet() {
+    this.eventPopover?.hide();
   }
 
   handleEventDrop(info: any) {

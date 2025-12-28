@@ -1,5 +1,17 @@
 <div class="card-container">
   <p-card class="calendar-card">
     <full-calendar [options]="calendarOptions"></full-calendar>
+      <p-popover #eventPopover [appendTo]="'body'">
+        <div class="event-popover" *ngIf="selectedEvent">
+          <h4>{{ selectedEvent.title }}</h4>
+          {{ selectedEvent.start | date: 'short' }} - {{ selectedEvent.end | date: 'short'}}
+          {{ selectedEvent.userEmail }}
+
+          <div class="actions">
+            <button pButton icon="pi pi-pencil" label="Edytuj"></button>
+            <button pButton icon="pi pi-trash" severity="danger"></button>
+          </div>
+        </div>
+      </p-popover>  
   </p-card>
 </div>
