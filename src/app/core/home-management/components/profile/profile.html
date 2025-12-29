@@ -22,9 +22,8 @@
                     @if (isInvalid("calendarEventBackgroundColor")) {
                         <p-message severity="error" size="small" variant="simple">Kolor jest wymagany</p-message>
                     }
-                    <span class="text-sm text-gray-500"> {{ editProfileForm.controls.calendarEventBackgroundColor.value }}</span>
                 </div>
-                
+
                 <button pButton severity="primary" type="submit"><span pButtonLabel>Zapisz</span></button>
             </form>
         }
