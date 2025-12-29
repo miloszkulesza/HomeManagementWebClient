@@ -10,9 +10,10 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Popover } from 'primeng/popover';
 import { ButtonModule } from 'primeng/button';
-import { CalendarService } from './calendar-service';
 import { ApplicationUserInterface } from '../../../interface/application-users-interface';
 import { forkJoin } from 'rxjs';
+import { CalendarService } from '../../services/calendar-service';
+import { UserProfileService } from '../../services/user-profile-service';
 
 @Component({
   selector: 'app-calendar',
@@ -27,7 +28,8 @@ import { forkJoin } from 'rxjs';
 })
 export class Calendar implements OnInit {
   @ViewChild('eventPopover') eventPopover!: Popover;
-  calendarService = inject(CalendarService);
+  readonly calendarService = inject(CalendarService);
+  readonly userProfileService = inject(UserProfileService);
 
   selectedEvent: any;
   events: EventInput[] = null;
@@ -35,7 +37,7 @@ export class Calendar implements OnInit {
 
   ngOnInit() {
     forkJoin({
-      user: this.calendarService.getCurrentUserInfo(),
+      user: this.userProfileService.getCurrentUserInfo(),
       events: this.calendarService.getCalendarEvents()
     }).subscribe(({ user, events }) => {
       this.currentUser = user;

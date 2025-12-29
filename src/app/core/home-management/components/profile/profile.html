@@ -1,1 +1,32 @@
-<p>profile works!</p>
+<div class="flex">
+    <p-panel header="Edytuj profil" style="width:100%; max-width:32rem; margin: 0 auto">
+        @if (editProfileForm) {
+            <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+                <p-inputgroup style="margin: 5px">
+                    <p-inputgroup-addon>
+                        <i class="pi pi-user"></i>
+                    </p-inputgroup-addon>
+                    <input pInputText formControlName="email" placeholder="Nazwa użytkownika" />
+                </p-inputgroup>
+
+                <p-inputgroup style="margin: 5px">
+                    <p-inputgroup-addon>
+                        <i class="pi pi-users"></i>
+                    </p-inputgroup-addon>
+                    <input pInputText formControlName="roles" placeholder="Role uprawnień" />
+                </p-inputgroup>
+
+                <div class="flex flex-col items-center gap-2" style="margin: 5px">
+                    <label for="color">Kolor użytkownika: </label>
+                    <p-colorpicker formControlName="calendarEventBackgroundColor" inputId="cp-hex" />
+                    @if (isInvalid("calendarEventBackgroundColor")) {
+                        <p-message severity="error" size="small" variant="simple">Kolor jest wymagany</p-message>
+                    }
+                    <span class="text-sm text-gray-500"> {{ editProfileForm.controls.calendarEventBackgroundColor.value }}</span>
+                </div>
+                
+                <button pButton severity="primary" type="submit"><span pButtonLabel>Zapisz</span></button>
+            </form>
+        }
+    </p-panel>
+</div>

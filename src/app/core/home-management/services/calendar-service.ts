@@ -1,16 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../../../environments/environment.development';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CalendarEventInterface } from '../../../interface/calendar-event-interface';
-import { ApplicationUserInterface } from '../../../interface/application-users-interface';
+import { CalendarEventInterface } from '../../interface/calendar-event-interface';
+import { ApplicationUserInterface } from '../../interface/application-users-interface';
+import { environment } from '../../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CalendarService {
   private url = `${environment.homeManagementServiceUrl}api/CalendarEvent`;
-  private urlAdmin = `${environment.homeManagementServiceUrl}api/Admin`;
   private http = inject(HttpClient);
 
   private createTokenHeader(): HttpHeaders {
@@ -26,11 +25,5 @@ export class CalendarService {
       startDate: new Date(e.startDate),
       endDate: new Date(e.endDate)
     }))));
-  }
-
-  public getCurrentUserInfo(): Observable<ApplicationUserInterface> {
-    const headers = this.createTokenHeader();
-    const email = sessionStorage.getItem('login');
-    return this.http.get<ApplicationUserInterface>(`${this.urlAdmin}/Users/${email}`, { headers });
   }
 }
