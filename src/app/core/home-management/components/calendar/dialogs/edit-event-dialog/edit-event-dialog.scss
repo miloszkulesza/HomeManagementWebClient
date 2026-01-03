@@ -1,0 +1,19 @@
+.form-vertical .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.form-vertical label {
+  font-weight: 600;
+}
+
+.p-datepicker,
+.p-inputtext {
+  width: 100%;
+}
+
+small.p-error {
+  color: #d32f2f;
+}

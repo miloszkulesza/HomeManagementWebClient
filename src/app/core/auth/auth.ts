@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from './auth-service';
-import { LoginInterface } from '../interface/login-interface';
-import { LoginFormInterface } from '../interface/login-form-interface';
+import { LoginInterface } from '../interface/auth/login-interface';
+import { LoginFormInterface } from '../interface/auth/login-form-interface';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -26,9 +26,9 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
   styleUrl: './auth.scss'
 })
 export class Auth implements OnInit {
-  authService = inject(AuthService);
-  router = inject(Router);
-  messageService = inject(MessageService);
+  readonly authService = inject(AuthService);
+  readonly router = inject(Router);
+  readonly messageService = inject(MessageService);
 
   loginForm: FormGroup<LoginFormInterface>;
   formSubmitted = false;

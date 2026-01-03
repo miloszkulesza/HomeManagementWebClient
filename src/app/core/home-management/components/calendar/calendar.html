@@ -1,6 +1,13 @@
 <div class="card-container">
+  <p-confirmdialog />
+  <app-edit-event-dialog
+    #editDialog
+    [event]="dialogEvent"
+    (save)="onEditDialogSave($event)"
+    (cancel)="onEditDialogCancel()"></app-edit-event-dialog>
+
   <p-card class="calendar-card">
-    <full-calendar [options]="calendarOptions"></full-calendar>
+    <full-calendar #fullcalendar [options]="calendarOptions"></full-calendar>
       <p-popover #eventPopover [appendTo]="'body'">
         <div class="event-popover" *ngIf="selectedEvent">
           <h4>{{ selectedEvent.title }}</h4>
@@ -8,8 +15,8 @@
           {{ selectedEvent.userEmail }}
 
           <div class="actions">
-            <button pButton icon="pi pi-pencil" label="Edytuj"></button>
-            <button pButton icon="pi pi-trash" severity="danger"></button>
+            <button pButton icon="pi pi-pencil" label="Edytuj" (click)="onEditClick()"></button>
+            <button pButton icon="pi pi-trash" severity="danger" label="Usuń" (click)="onDeleteClick($event)"></button>
           </div>
         </div>
       </p-popover>  

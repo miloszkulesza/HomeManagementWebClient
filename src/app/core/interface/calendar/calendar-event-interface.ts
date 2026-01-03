@@ -4,5 +4,6 @@ export interface CalendarEventInterface {
     startDate: Date,
     endDate: Date,
     userId: string,
-    userEmail: string
+    userEmail: string,
+    calendarEventBackgroundColor: string
 }

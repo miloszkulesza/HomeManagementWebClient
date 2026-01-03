@@ -6,13 +6,13 @@ import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EditProfileFormInterface } from '../../../interface/edit-profile-form-interface';
-import { UserProfileService } from '../../services/user-profile-service';
-import { ApplicationUserInterface } from '../../../interface/application-users-interface';
+import { EditProfileFormInterface } from '../../../interface/application-user/edit-profile-form-interface';
+import { UserProfileService } from '../../../services/user-profile-service';
+import { ApplicationUserInterface } from '../../../interface/application-user/application-users-interface';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { ApplicationUserUpdateInterface } from '../../../interface/application-user-update-interface';
+import { ApplicationUserUpdateInterface } from '../../../interface/application-user/application-user-update-interface';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 
 @Component({

@@ -1,0 +1,79 @@
+<p-dialog
+  header="Wydarzenie"
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '32rem' }">
+
+  <p class="p-text-secondary mb-8">
+    {{ mode === 'edit'
+      ? 'Edytuj istniejące wydarzenie'
+      : 'Utwórz nowe wydarzenie' }}
+  </p>
+
+  <form [formGroup]="form" class="p-fluid form-vertical">
+    <div class="field">
+      <label for="title">Nazwa wydarzenia</label>
+      <input id="title" pInputText formControlName="title" autofocus />
+      <small class="p-error" *ngIf="form.controls.title.touched && form.controls.title.invalid">
+        Tytuł jest wymagany
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="start">Data rozpoczęcia</label>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+            <i class="pi pi-clock"></i>
+        </p-inputgroup-addon>
+        <p-datepicker
+            id="start"
+            formControlName="start"
+            [showTime]="true"
+            hourFormat="24"
+            appendTo="body"
+            dateFormat="yy-mm-dd">
+        </p-datepicker>
+      </p-inputgroup>
+    </div>
+
+    <div class="field">
+      <label for="end">Data zakończenia</label>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+            <i class="pi pi-clock"></i>
+        </p-inputgroup-addon>
+        <p-datepicker
+            id="end"
+            formControlName="end"
+            [showTime]="true"
+            hourFormat="24"
+            appendTo="body"
+            dateFormat="yy-mm-dd">
+        </p-datepicker>
+      </p-inputgroup>
+      <small class="p-error" *ngIf="form.errors?.['dateRange']">
+        Data zakończenia musi być późniejsza niż rozpoczęcia
+      </small>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2">
+      <button
+        pButton
+        label="Anuluj"
+        severity="secondary"
+        (click)="onCancelClick()">
+      </button>
+      <button
+        pButton
+        label="Zapisz"
+        severity="success"
+        [disabled]="form.invalid"
+        (click)="submit()">
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

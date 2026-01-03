@@ -10,10 +10,14 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Popover } from 'primeng/popover';
 import { ButtonModule } from 'primeng/button';
-import { ApplicationUserInterface } from '../../../interface/application-users-interface';
+import { ApplicationUserInterface } from '../../../interface/application-user/application-users-interface';
 import { forkJoin } from 'rxjs';
-import { CalendarService } from '../../services/calendar-service';
-import { UserProfileService } from '../../services/user-profile-service';
+import { CalendarService } from '../../../services/calendar-service';
+import { UserProfileService } from '../../../services/user-profile-service';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { CalendarEventFullCalendarInterface } from '../../../interface/calendar/calendar-event-full-calendar-interface';
+import { EditEventDialog } from './dialogs/edit-event-dialog/edit-event-dialog';
 
 @Component({
   selector: 'app-calendar',
@@ -21,21 +25,33 @@ import { UserProfileService } from '../../services/user-profile-service';
     FullCalendarModule,
     CardModule,
     Popover,
-    ButtonModule
+    ButtonModule,
+    ConfirmDialog,
+    EditEventDialog
   ],
   templateUrl: './calendar.html',
-  styleUrl: './calendar.scss'
+  styleUrl: './calendar.scss',
+  providers: [ConfirmationService]
 })
 export class Calendar implements OnInit {
   @ViewChild('eventPopover') eventPopover!: Popover;
+  @ViewChild('editDialog') editDialog!: EditEventDialog;
+  @ViewChild('fullcalendar') fullcalendar!: any;
   readonly calendarService = inject(CalendarService);
   readonly userProfileService = inject(UserProfileService);
+  readonly confirmationService = inject(ConfirmationService);
+  readonly messageService = inject(MessageService);
 
-  selectedEvent: any;
+  selectedEvent: CalendarEventFullCalendarInterface;
   events: EventInput[] = null;
   currentUser: ApplicationUserInterface = null;
+  dialogEvent!: CalendarEventFullCalendarInterface;
 
   ngOnInit() {
+    this.getAllEvents();
+  }
+
+  getAllEvents() {
     forkJoin({
       user: this.userProfileService.getCurrentUserInfo(),
       events: this.calendarService.getCalendarEvents()
@@ -48,15 +64,18 @@ export class Calendar implements OnInit {
         end: e.endDate,
         editable: true,
         extendedProps: { priority: 'high' },
-        backgroundColor: this.currentUser.calendarEventBackgroundColor,
-        borderColor: this.currentUser.calendarEventBackgroundColor,
+        backgroundColor: e.calendarEventBackgroundColor,
+        borderColor: e.calendarEventBackgroundColor,
         userEmail: e.userEmail
       }));
       this.calendarOptions = { ...this.calendarOptions, events: this.events };
+    }, err => {
+      this.messageService.add({ severity: 'error', summary: 'Błąd', detail: `W czasie pobierania danych wystąpił błąd.` });
     });
   }
 
   calendarOptions: CalendarOptions = {
+    timeZone: 'local',
     initialView: 'dayGridMonth',
     headerToolbar: {
       left: 'prev,next today',
@@ -117,18 +136,16 @@ export class Calendar implements OnInit {
   };
 
   handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt('Nazwa wydarzenia');
-    if (title) {
-      this.events = [
-        ...this.events,
-        {
-          title,
-          start: selectInfo.start,
-          end: selectInfo.end,
-          allDay: selectInfo.allDay,
-        },
-      ];
-    }
+    this.dialogEvent = {
+      title: '',
+      start: selectInfo.start,
+      end: selectInfo.end,
+      userEmail: this.currentUser?.email,
+      id: null,
+      userId: this.currentUser?.id,
+      calendarEventBackgroundColor: this.currentUser?.calendarEventBackgroundColor
+    };
+    this.editDialog.showDialog(this.dialogEvent);
   }
 
   handleEventClick(clickInfo: EventClickArg) {
@@ -140,7 +157,10 @@ export class Calendar implements OnInit {
       title: clickInfo.event.title,
       start: clickInfo.event.start,
       end: clickInfo.event.end,
-      userEmail: clickInfo.event.extendedProps['userEmail']
+      userEmail: clickInfo.event.extendedProps['userEmail'],
+      id: clickInfo.event.id,
+      userId: clickInfo.event.extendedProps['userId'],
+      calendarEventBackgroundColor: clickInfo.event.extendedProps['calendarEventBackgroundColor']
     };
     this.eventPopover.show(clickInfo.jsEvent, clickInfo.el);
   }
@@ -155,5 +175,74 @@ export class Calendar implements OnInit {
 
   handleEventResize(info: any) {
     console.log('Zmieniono rozmiar:', info.event);
+  }
+
+  onDeleteClick(event: Event) {
+    this.eventPopover.hide();
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Czy na pewno chcesz usunąć wydarzenie?',
+      header: 'Usuń wydarzenie',
+      closable: true,
+      closeOnEscape: true,
+      icon: "pi pi-trash",
+      rejectButtonProps: {
+        label: 'Anuluj',
+        severity: 'secondary',
+        outlined: true
+      },
+      acceptButtonProps: {
+        label: 'Usuń',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.calendarService.deleteCalendarEvent(this.selectedEvent.id).subscribe(res => {
+          this.messageService.add({ severity: 'success', summary: 'Sukces', detail: `Wydarzenie '${this.selectedEvent.title}' zostało usunięte` });
+          const eventIndex = this.events.findIndex(e => e.id === this.selectedEvent.id);
+          this.events.splice(eventIndex, 1);
+          this.calendarOptions = {
+            ...this.calendarOptions,
+            events: [...this.events]
+          };
+        }, err => {
+          this.messageService.add({ severity: 'error', summary: 'Błąd', detail: `W czasie usuwania wydarzenia wystąpił błąd. ${err.message}` });
+        });
+      },
+    })
+  }
+
+  onEditClick() {
+    this.eventPopover.hide();
+    this.dialogEvent = this.selectedEvent;
+    this.editDialog.showDialog(this.dialogEvent);
+  }
+
+  onEditDialogSave(event: CalendarEventFullCalendarInterface) {
+    const eventInput: EventInput = {
+      id: event.id,
+      start: event.start,
+      end: event.end,
+      title: event.title,
+      editable: true,
+      extendedProps: { userEmail: event.userEmail, userId: event.userId },
+      backgroundColor: event.calendarEventBackgroundColor,
+      borderColor: event.calendarEventBackgroundColor
+    }
+    const eventIndex = this.events.findIndex(e => e.id === eventInput.id);
+    if (eventIndex !== -1)
+      this.events[eventIndex] = eventInput;
+    else
+      this.events.push(eventInput);
+    this.calendarOptions = {
+      ...this.calendarOptions,
+      events: [...this.events]
+    };
+    this.selectedEvent = null;
+    this.dialogEvent = null;
+  }
+
+  onEditDialogCancel() {
+    this.selectedEvent = null;
+    this.dialogEvent = null;
   }
 }

@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ApplicationUserInterface } from '../../interface/application-users-interface';
+import { ApplicationUserInterface } from '../interface/application-user/application-users-interface';
 import { Observable } from 'rxjs';
-import { ApplicationUserUpdateInterface } from '../../interface/application-user-update-interface';
+import { ApplicationUserUpdateInterface } from '../interface/application-user/application-user-update-interface';
 
 @Injectable({
   providedIn: 'root',
