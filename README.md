@@ -6,21 +6,21 @@ Klient Angular 20 dla aplikacji HomeManagement. Udostępnia logowanie, wspólny 
 
 ### Logowanie
 
-![Ekran logowania](docs/screenshots/login.jpg)
+![Ekran logowania](docs/screenshots/login.png)
 
 ### Kalendarz
 
 Wydarzenia `admin@example.local` są oznaczone kolorem niebieskim, a wydarzenia `anna@example.local` kolorem czerwonym.
 
-![Miesięczny widok kalendarza](docs/screenshots/calendar.jpg)
+![Miesięczny widok kalendarza](docs/screenshots/calendar.png)
 
 ### Zadania domowe
 
-![Lista zadań domowych](docs/screenshots/tasks.jpg)
+![Lista zadań domowych](docs/screenshots/tasks.png)
 
 ### Profil użytkownika
 
-![Profil drugiego domownika z indywidualnym kolorem wydarzeń](docs/screenshots/profile.jpg)
+![Profil drugiego domownika z indywidualnym kolorem wydarzeń](docs/screenshots/profile.png)
 
 ## Uruchomienie
 
