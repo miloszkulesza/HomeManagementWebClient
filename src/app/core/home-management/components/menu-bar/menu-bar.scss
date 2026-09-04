@@ -1,0 +1,28 @@
+.menu-link,
+.menu-actions {
+  display: flex;
+  align-items: center;
+}
+
+.menu-actions {
+  gap: 0.5rem;
+}
+
+.menu-icon,
+.submenu-icon,
+.menu-badge-nested,
+.menu-shortcut {
+  margin-left: auto;
+}
+
+.menu-badge-root {
+  margin-left: 0.5rem;
+}
+
+.menu-shortcut {
+  padding: 0.25rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-border-radius-sm);
+  color: var(--p-text-muted-color);
+  font-size: 0.75rem;
+}

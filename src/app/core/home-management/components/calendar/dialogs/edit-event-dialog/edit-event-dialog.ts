@@ -41,6 +41,7 @@ export class EditEventDialog implements OnInit {
     end: new FormControl(new Date(), { nonNullable: true })
   });
   visible: boolean = false;
+  saving = false;
   mode: 'create' | 'edit' = 'create';
 
   ngOnInit() {
@@ -87,7 +88,6 @@ export class EditEventDialog implements OnInit {
       else {
         this.createCalendarEvent();
       }
-      this.hideDialog();
     }
   }
 
@@ -95,10 +95,12 @@ export class EditEventDialog implements OnInit {
     const data: CalendarEventUpdateInterface = {
         title: this.form.value.title,
         startDate: this.form.value.start.toISOString(),
-        endDate: this.form.value.end.toISOString(),
-        userEmail: this.event.userEmail
+        endDate: this.form.value.end.toISOString()
       }
+      this.saving = true;
       this.calendarService.putCalendarEvent(this.event.id, data).subscribe(res => {
+        this.saving = false;
+        this.hideDialog();
         this.messageService.add({ severity: 'success', summary: 'Sukces', detail: `Zaktualizowano wydarzenie '${this.event.title}'`});
         const mappedEvent: CalendarEventFullCalendarInterface = {
           id: res.id,
@@ -111,6 +113,7 @@ export class EditEventDialog implements OnInit {
         };
         this.save.emit(mappedEvent);
       }, err => {
+        this.saving = false;
         this.messageService.add({ severity: 'error', summary: 'Błąd', detail: `W czasie edycji wydarzenia wystąpił błąd. ${err.message}` });
       });
   }
@@ -119,10 +122,12 @@ export class EditEventDialog implements OnInit {
     const data: CalendarEventUpdateInterface = {
         title: this.form.value.title,
         startDate: this.form.value.start.toISOString(),
-        endDate: this.form.value.end.toISOString(),
-        userEmail: this.event.userEmail
+        endDate: this.form.value.end.toISOString()
       }
+      this.saving = true;
       this.calendarService.postCalendarEvent(data).subscribe(res => {
+        this.saving = false;
+        this.hideDialog();
         this.messageService.add({ severity: 'success', summary: 'Sukces', detail: `Utworzono wydarzenie '${data.title}'`});
         const mappedEvent: CalendarEventFullCalendarInterface = {
           id: res.id,
@@ -135,11 +140,13 @@ export class EditEventDialog implements OnInit {
         };
         this.save.emit(mappedEvent);
       }, err => {
+        this.saving = false;
         this.messageService.add({ severity: 'error', summary: 'Błąd', detail: `W czasie edycji wydarzenia wystąpił błąd. ${err.message}` });
       });
   }
 
   onCancelClick() {
+    if (this.saving) return;
     this.cancel.emit();
     this.hideDialog();
   }

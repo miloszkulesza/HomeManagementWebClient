@@ -1,0 +1,63 @@
+<div class="tasks-page">
+  <p-card header="Zadania domowe">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="task-form">
+      <input pInputText formControlName="title" maxlength="200" placeholder="Co trzeba zrobić?" />
+
+      <select formControlName="assignedToUserId" aria-label="Osoba przypisana">
+        @for (user of users; track user.id) {
+          <option [value]="user.id">{{ user.email }}</option>
+        }
+      </select>
+
+      <label class="priority-control">
+        <input type="checkbox" formControlName="priority" />
+        Priorytet
+      </label>
+
+      <button pButton type="submit" [loading]="saving" [disabled]="form.invalid || saving">
+        <span pButtonLabel>{{ editingId ? 'Zapisz' : 'Dodaj' }}</span>
+      </button>
+
+      @if (editingId) {
+        <button pButton type="button" severity="secondary" (click)="cancelEdit()">
+          <span pButtonLabel>Anuluj</span>
+        </button>
+      }
+    </form>
+
+    @if (loading) {
+      <p>Ładowanie zadań…</p>
+    } @else if (items.length === 0) {
+      <p class="empty-state">Brak zadań. Dodaj pierwsze powyżej.</p>
+    } @else {
+      <ul class="task-list">
+        @for (item of items; track item.id) {
+          <li [class.done]="item.isDone" [class.priority]="item.priority">
+            <input
+              type="checkbox"
+              [checked]="item.isDone"
+              (change)="toggleDone(item)"
+              [attr.aria-label]="'Oznacz zadanie ' + item.title" />
+            <div class="task-content">
+              <strong>{{ item.title }}</strong>
+              <small>{{ userEmail(item.assignedToUserId) }}</small>
+            </div>
+            <button pButton type="button" severity="secondary" icon="pi pi-pencil" (click)="edit(item)"></button>
+            <button pButton type="button" severity="danger" icon="pi pi-trash" (click)="delete(item)"></button>
+          </li>
+        }
+      </ul>
+    }
+
+    <div class="footer-actions">
+      <button
+        pButton
+        type="button"
+        severity="danger"
+        [disabled]="!hasDoneItems"
+        (click)="clearDone()">
+        <span pButtonLabel>Usuń wykonane</span>
+      </button>
+    </div>
+  </p-card>
+</div>

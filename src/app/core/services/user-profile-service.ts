@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { ApplicationUserInterface } from '../interface/application-user/application-users-interface';
 import { Observable } from 'rxjs';
 import { ApplicationUserUpdateInterface } from '../interface/application-user/application-user-update-interface';
@@ -9,23 +9,18 @@ import { ApplicationUserUpdateInterface } from '../interface/application-user/ap
   providedIn: 'root',
 })
 export class UserProfileService {
-  private urlAdmin = `${environment.homeManagementServiceUrl}api/Admin`;
+  private url = `${environment.homeManagementServiceUrl}api/Profile/me`;
   private http = inject(HttpClient);
 
-  private createTokenHeader(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return headers;
-  }
-
   public getCurrentUserInfo(): Observable<ApplicationUserInterface> {
-    const headers = this.createTokenHeader();
-    const email = sessionStorage.getItem('login');
-    return this.http.get<ApplicationUserInterface>(`${this.urlAdmin}/Users/${email}`, { headers });
+    return this.http.get<ApplicationUserInterface>(this.url);
   }
 
-  public updateUserProfile(id: string, request: ApplicationUserUpdateInterface): Observable<ApplicationUserInterface> {
-    const headers = this.createTokenHeader();
-    return this.http.put<ApplicationUserInterface>(`${this.urlAdmin}/Users/${id}`, request, { headers });
+  public updateUserProfile(request: ApplicationUserUpdateInterface): Observable<ApplicationUserInterface> {
+    return this.http.put<ApplicationUserInterface>(this.url, request);
+  }
+
+  public getHouseholdUsers(): Observable<ApplicationUserInterface[]> {
+    return this.http.get<ApplicationUserInterface[]>(`${environment.homeManagementServiceUrl}api/Profile/users`);
   }
 }

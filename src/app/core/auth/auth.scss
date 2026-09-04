@@ -10,3 +10,18 @@
     justify-content: center;
     width: 100%;
 }
+
+.login-form,
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form {
+    gap: 1rem;
+    width: 100%;
+}
+
+.form-field {
+    gap: 0.25rem;
+}

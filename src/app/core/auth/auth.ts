@@ -3,7 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from './auth-service';
 import { LoginInterface } from '../interface/auth/login-interface';
 import { LoginFormInterface } from '../interface/auth/login-form-interface';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageModule } from 'primeng/message';
@@ -28,6 +28,7 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 export class Auth implements OnInit {
   readonly authService = inject(AuthService);
   readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
   readonly messageService = inject(MessageService);
 
   loginForm: FormGroup<LoginFormInterface>;
@@ -57,12 +58,14 @@ export class Auth implements OnInit {
       password: this.loginForm.value.password
     };
     this.authService.login(data).subscribe(res => {
-      sessionStorage.setItem('token', res.accessToken);
-      sessionStorage.setItem('login', data.email);
       this.messageService.add({ severity: 'success', summary: 'Zalogowano', detail: 'Zalogowano pomyślnie', life: 3000 });
       this.loginForm.reset();
       this.formSubmitted = false;
-      this.router.navigate(['/calendar']);
+      const requestedUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+      const returnUrl = requestedUrl?.startsWith('/') && !requestedUrl.startsWith('//')
+        ? requestedUrl
+        : '/calendar';
+      void this.router.navigateByUrl(returnUrl);
     }, err => {
       let errorResponse: HttpErrorResponse = err;
       switch (errorResponse.status)

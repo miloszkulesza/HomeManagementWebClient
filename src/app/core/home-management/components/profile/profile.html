@@ -1,7 +1,7 @@
-<div class="flex">
+<div class="profile-page">
     <p-panel header="Edytuj profil" style="width:100%; max-width:32rem; margin: 0 auto">
         @if (editProfileForm) {
-            <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+            <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()" class="profile-form">
                 <p-inputgroup style="margin: 5px">
                     <p-inputgroup-addon>
                         <i class="pi pi-user"></i>
@@ -16,7 +16,7 @@
                     <input pInputText formControlName="roles" placeholder="Role uprawnień" />
                 </p-inputgroup>
 
-                <div class="flex flex-col items-center gap-2" style="margin: 5px">
+                <div class="color-field">
                     <label for="color">Kolor użytkownika: </label>
                     <p-colorpicker formControlName="calendarEventBackgroundColor" inputId="cp-hex" />
                     @if (isInvalid("calendarEventBackgroundColor")) {

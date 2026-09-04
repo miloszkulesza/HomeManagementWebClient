@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LoginInterface } from '../interface/auth/login-interface';
@@ -16,8 +16,8 @@ export class AuthService {
   private http = inject(HttpClient);
 
   constructor() {
-      this.userLogin$.next(sessionStorage.getItem('login'));
-      if (this.userLogin$.getValue())
+      this.userLogin$.next(sessionStorage.getItem('login') ?? '');
+      if (sessionStorage.getItem('token'))
       {
         this.isLogged$.next(true);
       }
@@ -39,7 +39,9 @@ export class AuthService {
   }
 
   login(data: LoginInterface): Observable<LoginResponseInterface> {
-    return this.http.post<any>(`${this.url}login`, data).pipe(tap(res => {
+    return this.http.post<LoginResponseInterface>(`${this.url}login`, data).pipe(tap(res => {
+        sessionStorage.setItem('token', res.accessToken);
+        sessionStorage.setItem('login', data.email);
         this.userLogin$.next(data.email);
         this.isLogged$.next(true);
     }));

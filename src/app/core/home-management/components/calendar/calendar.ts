@@ -63,7 +63,11 @@ export class Calendar implements OnInit {
         start: e.startDate,
         end: e.endDate,
         editable: true,
-        extendedProps: { priority: 'high' },
+        extendedProps: {
+          userId: e.userId,
+          userEmail: e.userEmail,
+          calendarEventBackgroundColor: e.calendarEventBackgroundColor
+        },
         backgroundColor: e.calendarEventBackgroundColor,
         borderColor: e.calendarEventBackgroundColor,
         userEmail: e.userEmail
@@ -170,11 +174,11 @@ export class Calendar implements OnInit {
   }
 
   handleEventDrop(info: any) {
-    console.log('Przeniesiono event:', info.event);
+    this.persistCalendarChange(info);
   }
 
   handleEventResize(info: any) {
-    console.log('Zmieniono rozmiar:', info.event);
+    this.persistCalendarChange(info);
   }
 
   onDeleteClick(event: Event) {
@@ -199,7 +203,8 @@ export class Calendar implements OnInit {
         this.calendarService.deleteCalendarEvent(this.selectedEvent.id).subscribe(res => {
           this.messageService.add({ severity: 'success', summary: 'Sukces', detail: `Wydarzenie '${this.selectedEvent.title}' zostało usunięte` });
           const eventIndex = this.events.findIndex(e => e.id === this.selectedEvent.id);
-          this.events.splice(eventIndex, 1);
+          if (eventIndex !== -1)
+            this.events.splice(eventIndex, 1);
           this.calendarOptions = {
             ...this.calendarOptions,
             events: [...this.events]
@@ -220,11 +225,15 @@ export class Calendar implements OnInit {
   onEditDialogSave(event: CalendarEventFullCalendarInterface) {
     const eventInput: EventInput = {
       id: event.id,
-      start: event.start,
-      end: event.end,
+      start: new Date(event.start),
+      end: new Date(event.end),
       title: event.title,
       editable: true,
-      extendedProps: { userEmail: event.userEmail, userId: event.userId },
+      extendedProps: {
+        userEmail: event.userEmail,
+        userId: event.userId,
+        calendarEventBackgroundColor: event.calendarEventBackgroundColor
+      },
       backgroundColor: event.calendarEventBackgroundColor,
       borderColor: event.calendarEventBackgroundColor
     }
@@ -244,5 +253,28 @@ export class Calendar implements OnInit {
   onEditDialogCancel() {
     this.selectedEvent = null;
     this.dialogEvent = null;
+  }
+
+  private persistCalendarChange(info: any) {
+    const event = info.event;
+    if (!event.end) {
+      info.revert();
+      return;
+    }
+
+    this.calendarService.putCalendarEvent(event.id, {
+      title: event.title,
+      startDate: event.start.toISOString(),
+      endDate: event.end.toISOString()
+    }).subscribe({
+      error: (err) => {
+        info.revert();
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Błąd',
+          detail: `Nie udało się zapisać zmiany wydarzenia. ${err.message}`
+        });
+      }
+    });
   }
 }

@@ -64,7 +64,7 @@ export class Profile implements OnInit {
     const data: ApplicationUserUpdateInterface = {
       calendarEventBackgroundColor: this.editProfileForm.value.calendarEventBackgroundColor
     }
-    this.userProfileService.updateUserProfile(this.currentUser.id, data).subscribe(res => {
+    this.userProfileService.updateUserProfile(data).subscribe(res => {
       this.messageService.add({ severity: 'success', summary: 'Sukces', detail: 'Zaktualizowano profil użytkownika', life: 3000 });
       this.editProfileForm.reset();
       this.formSubmitted = false;

@@ -43,6 +43,10 @@ export class MenuBar implements OnInit {
           {
             label: 'Kalendarz',
             routerLink: 'calendar'
+          },
+          {
+            label: 'Zadania',
+            routerLink: 'tasks'
           }
         ]
       },

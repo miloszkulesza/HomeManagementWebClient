@@ -1,0 +1,77 @@
+.tasks-page {
+  max-width: 56rem;
+  margin: 1rem auto;
+}
+
+.task-form {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) minmax(12rem, auto) auto auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.task-form select {
+  min-height: 2.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--p-form-field-border-color);
+  border-radius: var(--p-form-field-border-radius);
+  background: var(--p-form-field-background);
+  color: var(--p-form-field-color);
+}
+
+.priority-control {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.task-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 0.5rem;
+}
+
+.task-list li.priority {
+  border-left: 0.3rem solid var(--p-red-500);
+}
+
+.task-list li.done strong {
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+
+.task-content {
+  flex: 1;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.task-content small,
+.empty-state {
+  color: var(--p-text-muted-color);
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+@media (max-width: 48rem) {
+  .task-form {
+    grid-template-columns: 1fr;
+  }
+}

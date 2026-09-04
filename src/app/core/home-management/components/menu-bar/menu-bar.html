@@ -1,23 +1,23 @@
 <p-menubar [model]="items">
     <ng-template #item let-item let-root="root">
-        <a pRipple class="flex items-center p-menubar-item-link" [routerLink]="item.routerLink" [pTooltip]="item.tooltip" [tooltipOptions]="item.tooltipOptions">
+        <a pRipple class="menu-link p-menubar-item-link" [routerLink]="item.routerLink" [pTooltip]="item.tooltip" [tooltipOptions]="item.tooltipOptions">
             @if (item.icon) {
-                <i [ngClass]="['ml-auto pi', item.icon]"></i>
+                <i [ngClass]="['menu-icon', 'pi', item.icon]"></i>
             }
             <span>{{ item.label }}</span>
             @if (item.badge) {
-                <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge" />
+                <p-badge [ngClass]="{ 'menu-badge-nested': !root, 'menu-badge-root': root }" [value]="item.badge" />
             }
             @if (item.shortcut) {
-                <span class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+                <span class="menu-shortcut">{{ item.shortcut }}</span>
             }
             @if (item.items) {
-                <i [ngClass]="['ml-auto pi', root ? 'pi-angle-down' : 'pi-angle-right']"></i>
+                <i [ngClass]="['submenu-icon', 'pi', root ? 'pi-angle-down' : 'pi-angle-right']"></i>
             }
         </a>
     </ng-template>
     <ng-template #end>
-        <div class="flex items-center gap-2">
+        <div class="menu-actions">
             <button pButton severity="danger" (click)="onLogoutClick()">
                 <i class="pi pi-sign-out" pButtonIcon></i>
                 <span pButtonLabel>Wyloguj</span>

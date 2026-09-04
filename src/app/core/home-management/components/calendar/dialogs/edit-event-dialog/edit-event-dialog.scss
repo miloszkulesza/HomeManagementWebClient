@@ -17,3 +17,14 @@
 small.p-error {
   color: #d32f2f;
 }
+
+.dialog-description {
+  color: var(--p-text-muted-color);
+  margin-bottom: 2rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

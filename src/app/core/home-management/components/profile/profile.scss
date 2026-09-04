@@ -1,0 +1,19 @@
+.profile-page {
+  display: flex;
+}
+
+.profile-form,
+.color-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-form {
+  gap: 1rem;
+}
+
+.color-field {
+  align-items: center;
+  gap: 0.5rem;
+  margin: 5px;
+}

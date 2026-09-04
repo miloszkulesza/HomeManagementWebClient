@@ -1,6 +1,5 @@
 export interface CalendarEventUpdateInterface {
     title: string,
     startDate: string,
-    endDate: string,
-    userEmail: string
+    endDate: string
 }
